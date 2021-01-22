@@ -1,14 +1,19 @@
+import { render } from '@testing-library/react'
 import { Button, DataTable, Icon } from 'bold-ui'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 interface RowType {
   id: number
   name: string
   age: number
+  algo: boolean
 }
 
 function Dia02() {
   const [sort, setSort] = useState(['id'])
+  const [gambi, setGambi] = useState(false)
+
+  useEffect(()=>{}, [gambi])
 
   const rows = allRows
     // Naive sorting for example purposes:
@@ -22,41 +27,61 @@ function Dia02() {
       return 0
     })
 
+  const onEditItemClicked = (item: RowType) => () => {
+    console.log(item)
+  }
+
+  const onCachorroItemClicked = (item: RowType) => () => {
+    item.algo = !item.algo;
+    setGambi(false);
+    console.log(item)
+  }
+
   return (
-    <DataTable<RowType>
-      rows={rows}
-      sort={sort}
-      onSortChange={setSort}
-      loading={false}
-      columns={[
-        {
-          name: 'id',
-          header: 'ID',
-          sortable: true,
-          render: item => item.id,
-        },
-        {
-          name: 'name',
-          header: 'Name',
-          sortable: true,
-          render: item => item.name,
-        },
-        {
-          name: 'age',
-          header: 'Age',
-          render: item => item.age,
-        },
-        {
-          name: 'actions',
-          align: 'right',
-          render: item => (
-            <Button size='small' skin='ghost'>
-              <Icon icon='penOutline' />
-            </Button>
-          ),
-        },
-      ]}
-    />
+    <>
+      <DataTable<RowType>
+        rows={rows}
+        sort={sort}
+        onSortChange={setSort}
+        loading={false}
+        columns={[
+          {
+            name: 'id',
+            header: 'ID',
+            sortable: true,
+            render: item => (
+              <>
+              {item.algo ? <Icon icon="adjust" /> : <Icon icon="angleDown" />} {item.id}
+              </>),
+          },
+          {
+            name: 'name',
+            header: 'Name',
+            sortable: true,
+            render: item => item.name,
+          },
+          {
+            name: 'age',
+            header: 'Age',
+            render: item => item.age,
+          },
+          {
+            name: 'actions',
+            align: 'right',
+            render: item => (
+              <>
+                <Button size='small' skin='ghost' onClick={onEditItemClicked(item)}>
+                  <Icon icon='penOutline' />
+                </Button>
+                <Button size='small' skin='ghost' onClick={onCachorroItemClicked(item)}>
+                  <Icon icon='dogLeashed' />
+                </Button>
+              </>
+            ),
+          },
+        ]}
+      />
+    </>
   )
 }
 
