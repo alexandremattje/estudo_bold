@@ -1,21 +1,17 @@
 import { render } from '@testing-library/react'
 import { Button, DataTable, Icon } from 'bold-ui'
 import React, { useEffect, useState } from 'react'
-
-interface RowType {
-  id: number
-  name: string
-  age: number
-  algo: boolean
-}
+import { isTemplateSpan } from 'typescript'
+import FormDemo from './Dia02Form'
+import Dia02Listagem from './Dia02Listagem'
+import { RowType } from './RowType'
 
 function Dia02() {
   const [sort, setSort] = useState(['id'])
-  const [gambi, setGambi] = useState(false)
+  const [editing, setEditing] = useState(false)
+  const [editingItem, setEditingItem] = useState<any>();
 
-  useEffect(()=>{}, [gambi])
-
-  const rows = allRows
+  const [rows, setRows] = useState(allRows
     // Naive sorting for example purposes:
     .sort((a, b) => {
       if (sort[0] === 'id') {
@@ -25,62 +21,20 @@ function Dia02() {
         return b.id - a.id
       }
       return 0
-    })
-
-  const onEditItemClicked = (item: RowType) => () => {
-    console.log(item)
-  }
-
-  const onCachorroItemClicked = (item: RowType) => () => {
-    item.algo = !item.algo;
-    setGambi(false);
-    console.log(item)
-  }
+    }))
 
   return (
     <>
-      <DataTable<RowType>
-        rows={rows}
-        sort={sort}
-        onSortChange={setSort}
-        loading={false}
-        columns={[
-          {
-            name: 'id',
-            header: 'ID',
-            sortable: true,
-            render: item => (
-              <>
-              {item.algo ? <Icon icon="adjust" /> : <Icon icon="angleDown" />} {item.id}
-              </>),
-          },
-          {
-            name: 'name',
-            header: 'Name',
-            sortable: true,
-            render: item => item.name,
-          },
-          {
-            name: 'age',
-            header: 'Age',
-            render: item => item.age,
-          },
-          {
-            name: 'actions',
-            align: 'right',
-            render: item => (
-              <>
-                <Button size='small' skin='ghost' onClick={onEditItemClicked(item)}>
-                  <Icon icon='penOutline' />
-                </Button>
-                <Button size='small' skin='ghost' onClick={onCachorroItemClicked(item)}>
-                  <Icon icon='dogLeashed' />
-                </Button>
-              </>
-            ),
-          },
-        ]}
-      />
+      {editing ?
+        <FormDemo item={editingItem} setEditing={() => {setEditing(false)}}/>
+        :
+        <>
+        <Dia02Listagem rows = {rows}/>
+          <Button size='small' skin='ghost' onClick={() => {setEditing(true)}}>
+            <Icon icon='rocket' />
+          </Button>
+          
+        </>}
     </>
   )
 }
