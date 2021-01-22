@@ -1,43 +1,58 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
 import './App.css';
-import { Alert, Button } from 'bold-ui';
-import OurButton from './OurButton';
+import Dia01 from './dia01/Dia01';
+import Dia02 from './dia02/Dia02';
 
 export interface OurButtonProps {
   count: number
-  onClick: ()=>void
+  onClick: () => void
 }
 
 function App() {
 
-  var [count, setCount] = useState(0);
-  const [showAlert, setShowAlert] = useState(true);
-
-  useEffect(() => {
-    setShowAlert(count === 3)
-  }, [count])
-
-  const handleClick = () => {
-    setCount(count + 1)
-  }
-
   return (
-    <div className="App">
-      <OurButton onClick={handleClick} count={count}/>
+      <Router>
+        <div>
+          <ul>
+            <li>
+              <Link to="/">Dia 01 - Configuração inicial e Hooks</Link>
+            </li>
+            <li>
+              <Link to="/list-detail">Dia 02 - Listagem e detail</Link>
+            </li>
+            <li>
+              <Link to="/dashboard">Dashboard</Link>
+            </li>
+          </ul>
 
-      <Button onClick={handleClick} kind='danger' >
-        Count click 2 ({count} vezes)
-      </Button>
+          <hr />
 
-      {showAlert ?
-        <Alert type='danger'>É Nóis</Alert> : <></>
-        }
-        {count === 6 ?
-      <Button onClick={handleClick} kind='normal' >
-        Count click 2 ({count} vezes)
-      </Button>:<></>}
-
-    </div>
+          {/*
+          A <Switch> looks through all its children <Route>
+          elements and renders the first one whose path
+          matches the current URL. Use a <Switch> any time
+          you have multiple routes, but you want only one
+          of them to render at a time
+        */}
+          <Switch>
+            <Route exact path="/">
+              <Dia01 />
+            </Route>
+            <Route path="/list-detail">
+              <Dia02 />
+            </Route>
+            <Route path="/dashboard">
+              <Dia01 />
+            </Route>
+          </Switch>
+        </div>
+      </Router>
   );
 }
 
