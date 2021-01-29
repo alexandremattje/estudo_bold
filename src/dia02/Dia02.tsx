@@ -7,30 +7,43 @@ import Dia02Listagem from './Dia02Listagem'
 import { RowType } from './RowType'
 
 function Dia02() {
-  const [sort, setSort] = useState(['id'])
   const [editing, setEditing] = useState(false)
-  const [editingItem, setEditingItem] = useState<any>();
+  const [editingItem, setEditingItem] = useState<RowType>({id: -1, algo: false});
 
-  const [rows, setRows] = useState(allRows
-    // Naive sorting for example purposes:
-    .sort((a, b) => {
-      if (sort[0] === 'id') {
-        return a.id - b.id
-      }
-      if (sort[0] === '-id') {
-        return b.id - a.id
-      }
-      return 0
-    }))
+  const [rows, setRows] = useState(allRows)
+
+  const editedItem = (item: RowType) => {
+    if (item.id === -1) {
+      item.id = rows.length + 1
+      setRows([...rows, item])
+    } else {
+      const found = rows.findIndex(it => {
+        return it.id === item.id
+      })
+      rows[found] = {...item}
+
+      // for (let i = 0; i < rows.length; i++) {
+      //   if (rows [i].id === item.id) {
+      //     rows[i] = {...item}
+      //   }
+      // }
+
+      setRows([...rows])
+    }
+    console.log(item)
+  }
 
   return (
     <>
       {editing ?
-        <FormDemo item={editingItem} setEditing={() => {setEditing(false)}}/>
+        <FormDemo item={editingItem} editedItem={editedItem} setEditing={() => {setEditing(false)}}/>
         :
         <>
-        <Dia02Listagem rows = {rows}/>
-          <Button size='small' skin='ghost' onClick={() => {setEditing(true)}}>
+        <Dia02Listagem rows = {rows} setItemParaEdicao={(item: RowType) => setEditingItem(item)} setEditing={() => {setEditing(true)}}/>
+          <Button size='small' skin='ghost' onClick={() => {
+            setEditingItem({id: -1, algo: false})
+            setEditing(true)
+            }}>
             <Icon icon='rocket' />
           </Button>
           

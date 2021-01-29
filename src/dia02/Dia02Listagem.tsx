@@ -7,6 +7,8 @@ import { RowType } from './RowType'
 
 export interface Dia02Listagem {
   rows: RowType[]
+  setItemParaEdicao: (item: RowType) => void
+  setEditing: () => void
 }
 
 function Dia02Listagem(props: Dia02Listagem) {
@@ -25,6 +27,8 @@ function Dia02Listagem(props: Dia02Listagem) {
     }))
 
   const onEditItemClicked = (item: RowType) => () => {
+    props.setItemParaEdicao(item)
+    props.setEditing()
     console.log(item)
   }
 
